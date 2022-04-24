@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Data
 
@@ -27,6 +28,11 @@ public class Product {
     private int quantity;
     @Column
     private String description;
+
+    @Column
+    private Boolean isActive;
+    @Column
+    private Date CreationDate;
 
     @ManyToOne
     @JoinColumn(name = "categoryId", referencedColumnName = "id")

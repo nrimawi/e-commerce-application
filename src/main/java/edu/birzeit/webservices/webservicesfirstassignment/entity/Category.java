@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Data
 @AllArgsConstructor
@@ -19,9 +20,13 @@ public class Category {
     @GeneratedValue
     private Long id;
 
-    @Column
+    @Column(nullable = false)
     private String name;
     @Column
     private String description;
 
+    @Column
+    private Boolean isActive;
+    @Column
+    private Date CreationDate;
 }

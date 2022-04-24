@@ -1,4 +1,4 @@
-package edu.birzeit.webservices.webservicesfirstassignment.entity;
+package edu.birzeit.webservices.webservicesfirstassignment.dto;
 
 
 import lombok.AllArgsConstructor;
@@ -6,32 +6,22 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.Date;
 
 @Data
 
-@AllArgsConstructor
-@NoArgsConstructor
-@Entity
+public class SupplierDto {
 
-@Table
-public class Supplier {
-
-    @Id
-    @GeneratedValue
     private Long id;
-    @Column
+    @NotNull
+    @Size(min = 3, max = 250)
     private String name;
-    @Column
     private String contactName;
-    @Column
     private String email;
-    @Column
     private String phone;
-    @Column
     private String address;
-    @Column
     private Boolean isActive;
-    @Column
     private Date CreationDate;
 }
