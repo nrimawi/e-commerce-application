@@ -1,7 +1,6 @@
 package edu.birzeit.webservices.webservicesfirstassignment.service.impl;
 
 
-
 import edu.birzeit.webservices.webservicesfirstassignment.dto.CategoryDto;
 import edu.birzeit.webservices.webservicesfirstassignment.entity.Category;
 import edu.birzeit.webservices.webservicesfirstassignment.exception.ResourceNotFoundException;
@@ -25,74 +24,99 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public CategoryDto createCategory(CategoryDto CategoryDto) {
 
-        // convert DTO to entity
-        Category Category = mapToEntity(CategoryDto);
-        Category newCategory = CategoryRepository.save(Category);
+        try {
+            // convert DTO to entity
+            Category Category = mapToEntity(CategoryDto);
+            Category newCategory = CategoryRepository.save(Category);
 
-        // convert entity to DTO
-        CategoryDto CategoryResponse = mapToDTO(newCategory);
-        return CategoryResponse;
+            // convert entity to DTO
+            CategoryDto CategoryResponse = mapToDTO(newCategory);
+            return CategoryResponse;
+        } catch (Exception e) {
+            throw e;
+        }
     }
 
     @Override
     public List<CategoryDto> getAllCategories() {
-        List<Category> categories = CategoryRepository.findAll();
-        ArrayList<CategoryDto> categoriesDto=new ArrayList<CategoryDto>();
+        try {
 
-        for (Category  category:categories)
-            if(category.getIsActive())
-                categoriesDto.add(mapToDTO(category));
+            List<Category> categories = CategoryRepository.findAll();
+            ArrayList<CategoryDto> categoriesDto = new ArrayList<CategoryDto>();
 
-        return  categoriesDto;
+            for (Category category : categories)
+                if (category.getIsActive())
+                    categoriesDto.add(mapToDTO(category));
+
+            return categoriesDto;
+        } catch (Exception e) {
+            throw e;
+        }
     }
-
 
 
     @Override
     public CategoryDto getCategoryById(long id) {
-        Category Category = CategoryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Category", "id", id));
-        if (!Category.getIsActive())
-            throw new ResourceNotFoundException("Category", "id", id);
-        return mapToDTO(Category);
+        try {
+            Category Category = CategoryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Category", "id", id));
+            if (!Category.getIsActive())
+                throw new ResourceNotFoundException("Category", "id", id);
+            return mapToDTO(Category);
+        } catch (Exception e) {
+            throw e;
+        }
     }
 
     @Override
     public CategoryDto updateCategory(CategoryDto CategoryDto, long id) {
-        // get Category by id from the database
-        Category Category = CategoryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Category", "id", id));
-        if(Category.getIsActive()) {
-            Category.setName(CategoryDto.getName());
-            Category.setDescription(CategoryDto.getDescription());
-            Category.setCreationDate(CategoryDto.getCreationDate());
-        }
-        Category updatedCategory = CategoryRepository.save(Category);
+        try {
+            // get Category by id from the database
+            Category Category = CategoryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Category", "id", id));
+            if (Category.getIsActive()) {
+                Category=mapToEntity(CategoryDto);
 
-        return mapToDTO(updatedCategory);
+            }
+            Category updatedCategory = CategoryRepository.save(Category);
+
+            return mapToDTO(updatedCategory);
+        } catch (Exception e) {
+            throw e;
+        }
     }
 
     @Override
     public void deleteCategoryById(long id) {
-        // get Category by id from the database
-        Category Category = CategoryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Category", "id", id));
-        Category.setIsActive(false);
-        CategoryRepository.save(Category);
+        try {
+            // get Category by id from the database
+            Category Category = CategoryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Category", "id", id));
+            Category.setIsActive(false);
+            CategoryRepository.save(Category);
+        } catch (Exception e) {
+            throw e;
+        }
     }
 
-    private CategoryDto mapToDTO(Category Category){
-        CategoryDto CategoryDto = new CategoryDto();
-        CategoryDto.setId(Category.getId());
-        CategoryDto.setCreationDate(Category.getCreationDate());
-        CategoryDto.setDescription(Category.getDescription());
-        CategoryDto.setName(Category.getName());
-        return CategoryDto;
+    private CategoryDto mapToDTO(Category Category) {
+        try {
+            CategoryDto CategoryDto = new CategoryDto();
+            CategoryDto.setId(Category.getId());
+            CategoryDto.setDescription(Category.getDescription());
+            CategoryDto.setName(Category.getName());
+            return CategoryDto;
+        } catch (Exception e) {
+            throw e;
+        }
     }
 
-    private Category mapToEntity(CategoryDto CategoryDto){
-        Category Category = new Category();
-        Category.setId(CategoryDto.getId());
-        Category.setCreationDate(CategoryDto.getCreationDate());
-        Category.setDescription(CategoryDto.getDescription());
-        Category.setName(CategoryDto.getName());
-        return Category;
+    private Category mapToEntity(CategoryDto CategoryDto) {
+        try {
+            Category Category = new Category();
+            Category.setId(CategoryDto.getId());
+            Category.setDescription(CategoryDto.getDescription());
+            Category.setName(CategoryDto.getName());
+            return Category;
+        } catch (Exception e) {
+            throw e;
+        }
     }
 }

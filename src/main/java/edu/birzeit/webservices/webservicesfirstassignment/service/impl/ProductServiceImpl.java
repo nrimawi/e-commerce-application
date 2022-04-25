@@ -1,9 +1,12 @@
 package edu.birzeit.webservices.webservicesfirstassignment.service.impl;
 
 
-
+import edu.birzeit.webservices.webservicesfirstassignment.dto.CategoryDto;
 import edu.birzeit.webservices.webservicesfirstassignment.dto.ProductDto;
+import edu.birzeit.webservices.webservicesfirstassignment.dto.SupplierDto;
+import edu.birzeit.webservices.webservicesfirstassignment.entity.Category;
 import edu.birzeit.webservices.webservicesfirstassignment.entity.Product;
+import edu.birzeit.webservices.webservicesfirstassignment.entity.Supplier;
 import edu.birzeit.webservices.webservicesfirstassignment.exception.ResourceNotFoundException;
 import edu.birzeit.webservices.webservicesfirstassignment.repository.ProductRepository;
 import edu.birzeit.webservices.webservicesfirstassignment.service.ProductService;
@@ -11,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service //To enable this class for component scanning
 public class ProductServiceImpl implements ProductService {
@@ -24,73 +28,141 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductDto createProduct(ProductDto ProductDto) {
 
-        Product Product = mapToEntity(ProductDto);
-        Product newProduct = ProductRepository.save(Product);
+        try {
+            // convert DTO to entity
+            Product Product = mapToEntity(ProductDto);
+            Product newProduct = ProductRepository.save(Product);
 
-        ProductDto ProductResponse = mapToDTO(newProduct);
-        return ProductResponse;
+            // convert entity to DTO
+            ProductDto ProductResponse = mapToDTO(newProduct);
+            return ProductResponse;
+        } catch (Exception e) {
+            throw e;
+        }
     }
 
     @Override
     public List<ProductDto> getAllProducts() {
-        List<Product> products = ProductRepository.findAll();
-        ArrayList<ProductDto> productsDto=new ArrayList<ProductDto>();
+        try {
 
-        for (Product  Product:products)
-            if(Product.getIsActive())
-                productsDto.add(mapToDTO(Product));
+            List<Product> categories = ProductRepository.findAll();
+            ArrayList<ProductDto> categoriesDto = new ArrayList<ProductDto>();
 
-        return  productsDto;
+            for (Product Product : categories)
+                if (Product.getIsActive())
+                    categoriesDto.add(mapToDTO(Product));
+
+            return categoriesDto;
+        } catch (Exception e) {
+            throw e;
+        }
     }
+
 
     @Override
     public ProductDto getProductById(long id) {
-        Product Product = ProductRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product", "id", id));
-        if (!Product.getIsActive())
-            throw new ResourceNotFoundException("Product", "id", id);
-        return mapToDTO(Product);
+        try {
+            Product Product = ProductRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product", "id", id));
+            if (!Product.getIsActive())
+                throw new ResourceNotFoundException("Product", "id", id);
+            return mapToDTO(Product);
+        } catch (Exception e) {
+            throw e;
+        }
     }
 
     @Override
     public ProductDto updateProduct(ProductDto ProductDto, long id) {
-        // get Product by id from the database
-        Product Product = ProductRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product", "id", id));
-        if(Product.getIsActive()) {
-            Product.setName(ProductDto.getName());
-            Product.setDescription(ProductDto.getDescription());
-            Product.setCreationDate(ProductDto.getCreationDate());
-        }
-        Product updatedProduct = ProductRepository.save(Product);
+        try {
+            // get Product by id from the database
+            Product Product = ProductRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product", "id", id));
+            if (Product.getIsActive()) {
 
-        return mapToDTO(updatedProduct);
+                Product = mapToEntity(ProductDto);
+
+            }
+            Product updatedProduct = ProductRepository.save(Product);
+
+            return mapToDTO(updatedProduct);
+        } catch (Exception e) {
+            throw e;
+        }
     }
 
     @Override
     public void deleteProductById(long id) {
-        // get Product by id from the database
-        Product Product = ProductRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product", "id", id));
-        Product.setIsActive(false);
-        ProductRepository.save(Product);
+        try {
+            // get Product by id from the database
+            Product Product = ProductRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product", "id", id));
+            Product.setIsActive(false);
+            ProductRepository.save(Product);
+        } catch (Exception e) {
+            throw e;
+        }
     }
 
-    private ProductDto mapToDTO(Product Product){
-        ProductDto ProductDto = new ProductDto();
-        ProductDto.setId(Product.getId());
-        ProductDto.setCreationDate(Product.getCreationDate());
-        ProductDto.setDescription(Product.getDescription());
-        ProductDto.setName(Product.getName());
-        ProductDto.setPrice(Product.getPrice());
-        return ProductDto;
+    private ProductDto mapToDTO(Product Product) {
+        try {
+
+            ProductDto ProductDto = new ProductDto();
+            ProductDto.setName(Product.getName());
+            ProductDto.setId(Product.getId());
+            ProductDto.setPrice(Product.getPrice());
+            ProductDto.setQuantity(Product.getQuantity());
+            ProductDto.setDescription(Product.getDescription());
+
+
+            SupplierDto supplier = new SupplierDto();
+            supplier.setName(Product.getSupplier().getName());
+            supplier.setAddress(Product.getSupplier().getAddress());
+            supplier.setContactName(Product.getSupplier().getContactName());
+            supplier.setEmail(Product.getSupplier().getEmail());
+            supplier.setPhone(Product.getSupplier().getPhone());
+            supplier.setId(Product.getSupplier().getId());
+            supplier.setAddress(Product.getSupplier().getAddress());
+            ProductDto.setSupplier(supplier);
+
+            CategoryDto categoryDto = new CategoryDto();
+            categoryDto.setName(Product.getCategory().getName());
+            categoryDto.setDescription(Product.getCategory().getDescription());
+            categoryDto.setId(Product.getCategory().getId());
+            ProductDto.setCategory(categoryDto);
+
+            return ProductDto;
+        } catch (Exception e) {
+            throw e;
+        }
     }
 
-    private Product mapToEntity(ProductDto ProductDto){
-        Product Product = new Product();
-        Product.setId(ProductDto.getId());
-        Product.setCreationDate(ProductDto.getCreationDate());
-        Product.setDescription(ProductDto.getDescription());
-        Product.setName(ProductDto.getName());
-        Product.setPrice(ProductDto.getPrice());
+    private Product mapToEntity(ProductDto ProductDto) {
+        try {
+            Product Product = new Product();
+            Product.setName(ProductDto.getName());
+            Product.setId(ProductDto.getId());
+            Product.setPrice(ProductDto.getPrice());
+            Product.setQuantity(ProductDto.getQuantity());
+            Product.setDescription(ProductDto.getDescription());
 
-        return Product;
+
+            Supplier supplier = new Supplier();
+            supplier.setName(ProductDto.getSupplier().getName());
+            supplier.setAddress(ProductDto.getSupplier().getAddress());
+            supplier.setContactName(ProductDto.getSupplier().getContactName());
+            supplier.setEmail(ProductDto.getSupplier().getEmail());
+            supplier.setPhone(ProductDto.getSupplier().getPhone());
+            supplier.setId(ProductDto.getSupplier().getId());
+            supplier.setAddress(ProductDto.getSupplier().getAddress());
+            Product.setSupplier(supplier);
+
+            Category category = new Category();
+            category.setName(ProductDto.getCategory().getName());
+            category.setDescription(ProductDto.getCategory().getDescription());
+            category.setId(ProductDto.getCategory().getId());
+            Product.setCategory(category);
+
+            return Product;
+        } catch (Exception e) {
+            throw e;
+        }
     }
 }

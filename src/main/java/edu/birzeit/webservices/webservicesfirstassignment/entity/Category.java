@@ -27,6 +27,5 @@ public class Category {
 
     @Column
     private Boolean isActive;
-    @Column
-    private Date CreationDate;
+
 }

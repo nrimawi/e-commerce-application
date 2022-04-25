@@ -32,6 +32,5 @@ public class Supplier {
     private String address;
     @Column
     private Boolean isActive;
-    @Column
-    private Date CreationDate;
+
 }

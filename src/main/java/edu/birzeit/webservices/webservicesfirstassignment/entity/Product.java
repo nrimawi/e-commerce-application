@@ -31,8 +31,6 @@ public class Product {
 
     @Column
     private Boolean isActive;
-    @Column
-    private Date CreationDate;
 
     @ManyToOne
     @JoinColumn(name = "categoryId", referencedColumnName = "id")

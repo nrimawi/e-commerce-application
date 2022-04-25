@@ -21,11 +21,7 @@ public class ProductDto {
     private double price;
     private int quantity;
     private String description;
-
-    private Boolean isActive;
-    private Date CreationDate;
-
-    private Category category;
-    private Supplier supplier;
+    private CategoryDto category;
+    private SupplierDto supplier;
 
 }
