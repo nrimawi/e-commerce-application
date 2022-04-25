@@ -27,6 +27,7 @@ public class SupplierServiceImpl implements SupplierService {
         try {
             // convert DTO to entity
             Supplier Supplier = mapToEntity(SupplierDto);
+            Supplier.setIsActive(true);
             Supplier newSupplier = SupplierRepository.save(Supplier);
 
             // convert entity to DTO
@@ -73,8 +74,10 @@ public class SupplierServiceImpl implements SupplierService {
             // get Supplier by id from the database
             Supplier Supplier = SupplierRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Supplier", "id", id));
             if (Supplier.getIsActive()) {
+                SupplierDto.setId(id);
 
                 Supplier = mapToEntity(SupplierDto);
+                Supplier.setIsActive(true);
 
             }
             Supplier updatedSupplier = SupplierRepository.save(Supplier);

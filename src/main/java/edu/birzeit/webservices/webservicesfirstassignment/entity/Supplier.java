@@ -4,6 +4,8 @@ package edu.birzeit.webservices.webservicesfirstassignment.entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
+import org.springframework.beans.factory.annotation.Value;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -31,6 +33,8 @@ public class Supplier {
     @Column
     private String address;
     @Column
+    @ColumnDefault("true")
+
     private Boolean isActive;
 
 }

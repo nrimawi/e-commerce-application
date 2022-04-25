@@ -1,7 +1,6 @@
 package edu.birzeit.webservices.webservicesfirstassignment.controller;
 
 
-
 import edu.birzeit.webservices.webservicesfirstassignment.dto.CategoryDto;
 import edu.birzeit.webservices.webservicesfirstassignment.exception.BadRequestException;
 import edu.birzeit.webservices.webservicesfirstassignment.service.CategoryService;
@@ -12,55 +11,94 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import edu.birzeit.webservices.webservicesfirstassignment.service.CategoryService;
+
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 
 
 @RestController
-@RequestMapping("/api/Category")
+@RequestMapping("/api/categories")
 public class CategoryResource {
     private final Logger log = LoggerFactory.getLogger(CategoryResource.class);
 
-   @Autowired
+    @Autowired
     private CategoryService CategoryService; //the use of interface rather than class is important for loose coupling
 
-// Constructor based  injection
+    // Constructor based  injection
     public CategoryResource(CategoryService CategoryService) {
         this.CategoryService = CategoryService;
     }
 
     @GetMapping
-    public ResponseEntity<List<CategoryDto>> getAllCategories() {
-        return ResponseEntity.ok().body(CategoryService.getAllCategories()); //ResponseEntity represents an HTTP response, including headers, body, and status.
+    public ResponseEntity getAllCategories() {
+        try {
+            return ResponseEntity.ok().body(CategoryService.getAllCategories()); //ResponseEntity represents an HTTP response, including headers, body, and status.
+
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+
+
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CategoryDto> getCategoryById(@PathVariable(name = "id") long id) {
-        return ResponseEntity.ok(CategoryService.getCategoryById(id));
+    public ResponseEntity getCategoryById(@PathVariable(name = "id") long id) {
+        try {
+            return ResponseEntity.ok(CategoryService.getCategoryById(id));
+
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+
     }
 
 
     @PostMapping
-    public ResponseEntity<CategoryDto> createCategory(@Valid @RequestBody CategoryDto CategoryDto) {
-        if (CategoryDto.getId() != null) {
-            log.error("Cannot have an ID {}", CategoryDto);
-            throw new BadRequestException(CategoryResource.class.getSimpleName(),
-                    "Id");
+    public ResponseEntity createCategory(@Valid @RequestBody CategoryDto CategoryDto) {
+        try {
+
+
+            if (CategoryDto.getId() != null) {
+                log.error("Cannot have an ID {}", CategoryDto);
+                throw new BadRequestException(CategoryResource.class.getSimpleName(),
+                        "Id");
+            }
+
+            return new ResponseEntity<>(CategoryService.createCategory(CategoryDto), HttpStatus.CREATED);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
-        return new ResponseEntity<>(CategoryService.createCategory(CategoryDto), HttpStatus.CREATED);
+
+
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CategoryDto> updateCategory(@Valid @RequestBody CategoryDto CategoryDto
+    public ResponseEntity updateCategory(@Valid @RequestBody CategoryDto CategoryDto
             , @PathVariable(name = "id") long id) {
-        return new ResponseEntity<>(CategoryService.updateCategory(CategoryDto, id), HttpStatus.OK);
+
+        try {
+
+            return new ResponseEntity<>(CategoryService.updateCategory(CategoryDto, id), HttpStatus.OK);
+        }
+        catch (Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+
+        }
     }
 
     //    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteCategory(@PathVariable(name = "id") long id) {
-        CategoryService.deleteCategoryById(id);
+        try {
+
+            CategoryService.deleteCategoryById(id);
 //        return ResponseEntity.ok().headers(<add warnings....>).build();
-        return new ResponseEntity<>("Deleted successfully.", HttpStatus.OK);
+            return new ResponseEntity<>("Deleted successfully.", HttpStatus.OK);
+        }
+        catch (Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+
+        }
     }
 }

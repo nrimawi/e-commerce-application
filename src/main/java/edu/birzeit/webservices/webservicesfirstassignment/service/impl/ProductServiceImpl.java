@@ -31,6 +31,7 @@ public class ProductServiceImpl implements ProductService {
         try {
             // convert DTO to entity
             Product Product = mapToEntity(ProductDto);
+            Product.setIsActive(true);
             Product newProduct = ProductRepository.save(Product);
 
             // convert entity to DTO
@@ -77,8 +78,10 @@ public class ProductServiceImpl implements ProductService {
             // get Product by id from the database
             Product Product = ProductRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product", "id", id));
             if (Product.getIsActive()) {
-
+ProductDto.setId(id);
                 Product = mapToEntity(ProductDto);
+                Product.setIsActive(true);
+
 
             }
             Product updatedProduct = ProductRepository.save(Product);

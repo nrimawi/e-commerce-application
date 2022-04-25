@@ -27,6 +27,7 @@ public class CategoryServiceImpl implements CategoryService {
         try {
             // convert DTO to entity
             Category Category = mapToEntity(CategoryDto);
+            Category.setIsActive(true);
             Category newCategory = CategoryRepository.save(Category);
 
             // convert entity to DTO
@@ -73,8 +74,9 @@ public class CategoryServiceImpl implements CategoryService {
             // get Category by id from the database
             Category Category = CategoryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Category", "id", id));
             if (Category.getIsActive()) {
+                CategoryDto.setId(id);
                 Category=mapToEntity(CategoryDto);
-
+                Category.setIsActive(true);
             }
             Category updatedCategory = CategoryRepository.save(Category);
 
