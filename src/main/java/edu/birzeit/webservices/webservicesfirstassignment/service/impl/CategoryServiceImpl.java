@@ -78,7 +78,6 @@ public class CategoryServiceImpl implements CategoryService {
         CategoryRepository.save(Category);
     }
 
-    // convert Entity into DTO
     private CategoryDto mapToDTO(Category Category){
         CategoryDto CategoryDto = new CategoryDto();
         CategoryDto.setId(Category.getId());
@@ -88,7 +87,6 @@ public class CategoryServiceImpl implements CategoryService {
         return CategoryDto;
     }
 
-    // convert DTO to entity
     private Category mapToEntity(CategoryDto CategoryDto){
         Category Category = new Category();
         Category.setId(CategoryDto.getId());
