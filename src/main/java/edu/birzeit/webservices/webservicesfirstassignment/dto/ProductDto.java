@@ -21,7 +21,7 @@ public class ProductDto {
     private double price;
     private int quantity;
     private String description;
-    private CategoryDto category;
-    private SupplierDto supplier;
+    private long categoryId;
+    private long supplierId;
 
 }

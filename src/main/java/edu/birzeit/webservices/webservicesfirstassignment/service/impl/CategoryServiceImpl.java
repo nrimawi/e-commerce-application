@@ -75,7 +75,7 @@ public class CategoryServiceImpl implements CategoryService {
             Category Category = CategoryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Category", "id", id));
             if (Category.getIsActive()) {
                 CategoryDto.setId(id);
-                Category=mapToEntity(CategoryDto);
+                Category = mapToEntity(CategoryDto);
                 Category.setIsActive(true);
             }
             Category updatedCategory = CategoryRepository.save(Category);
@@ -91,6 +91,8 @@ public class CategoryServiceImpl implements CategoryService {
         try {
             // get Category by id from the database
             Category Category = CategoryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Category", "id", id));
+            if (!Category.getIsActive())
+                throw new ResourceNotFoundException("Category", "id", id);
             Category.setIsActive(false);
             CategoryRepository.save(Category);
         } catch (Exception e) {

@@ -93,8 +93,7 @@ public class CategoryResource {
         try {
 
             CategoryService.deleteCategoryById(id);
-//        return ResponseEntity.ok().headers(<add warnings....>).build();
-            return new ResponseEntity<>("Deleted successfully.", HttpStatus.OK);
+            return new ResponseEntity<>("Category with id="+id+" has been deleted successfully.", HttpStatus.OK);
         }
         catch (Exception e){
             return ResponseEntity.badRequest().body(e.getMessage());

@@ -93,6 +93,8 @@ public class SupplierServiceImpl implements SupplierService {
         try {
             // get Supplier by id from the database
             Supplier Supplier = SupplierRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Supplier", "id", id));
+            if (!Supplier.getIsActive())
+                throw new ResourceNotFoundException("Supplier", "id", id);
             Supplier.setIsActive(false);
             SupplierRepository.save(Supplier);
         } catch (Exception e) {

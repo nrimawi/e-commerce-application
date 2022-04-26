@@ -9,6 +9,7 @@ import edu.birzeit.webservices.webservicesfirstassignment.entity.Product;
 import edu.birzeit.webservices.webservicesfirstassignment.entity.Supplier;
 import edu.birzeit.webservices.webservicesfirstassignment.exception.ResourceNotFoundException;
 import edu.birzeit.webservices.webservicesfirstassignment.repository.ProductRepository;
+import edu.birzeit.webservices.webservicesfirstassignment.repository.SupplierRepository;
 import edu.birzeit.webservices.webservicesfirstassignment.service.ProductService;
 import org.springframework.stereotype.Service;
 
@@ -78,7 +79,7 @@ public class ProductServiceImpl implements ProductService {
             // get Product by id from the database
             Product Product = ProductRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product", "id", id));
             if (Product.getIsActive()) {
-ProductDto.setId(id);
+                ProductDto.setId(id);
                 Product = mapToEntity(ProductDto);
                 Product.setIsActive(true);
 
@@ -97,6 +98,8 @@ ProductDto.setId(id);
         try {
             // get Product by id from the database
             Product Product = ProductRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product", "id", id));
+            if (!Product.getIsActive())
+                throw new ResourceNotFoundException("Product", "id", id);
             Product.setIsActive(false);
             ProductRepository.save(Product);
         } catch (Exception e) {
@@ -114,22 +117,13 @@ ProductDto.setId(id);
             ProductDto.setQuantity(Product.getQuantity());
             ProductDto.setDescription(Product.getDescription());
 
-
-            SupplierDto supplier = new SupplierDto();
-            supplier.setName(Product.getSupplier().getName());
-            supplier.setAddress(Product.getSupplier().getAddress());
-            supplier.setContactName(Product.getSupplier().getContactName());
-            supplier.setEmail(Product.getSupplier().getEmail());
-            supplier.setPhone(Product.getSupplier().getPhone());
-            supplier.setId(Product.getSupplier().getId());
-            supplier.setAddress(Product.getSupplier().getAddress());
-            ProductDto.setSupplier(supplier);
+            SupplierDto supplierDto = new SupplierDto();
+            supplierDto.setId(Product.getSupplier().getId());
+            ProductDto.setSupplierId(Product.getSupplier().getId());
 
             CategoryDto categoryDto = new CategoryDto();
-            categoryDto.setName(Product.getCategory().getName());
-            categoryDto.setDescription(Product.getCategory().getDescription());
             categoryDto.setId(Product.getCategory().getId());
-            ProductDto.setCategory(categoryDto);
+            ProductDto.setCategoryId(Product.getCategory().getId());
 
             return ProductDto;
         } catch (Exception e) {
@@ -148,19 +142,11 @@ ProductDto.setId(id);
 
 
             Supplier supplier = new Supplier();
-            supplier.setName(ProductDto.getSupplier().getName());
-            supplier.setAddress(ProductDto.getSupplier().getAddress());
-            supplier.setContactName(ProductDto.getSupplier().getContactName());
-            supplier.setEmail(ProductDto.getSupplier().getEmail());
-            supplier.setPhone(ProductDto.getSupplier().getPhone());
-            supplier.setId(ProductDto.getSupplier().getId());
-            supplier.setAddress(ProductDto.getSupplier().getAddress());
+            supplier.setId(ProductDto.getSupplierId());
             Product.setSupplier(supplier);
 
             Category category = new Category();
-            category.setName(ProductDto.getCategory().getName());
-            category.setDescription(ProductDto.getCategory().getDescription());
-            category.setId(ProductDto.getCategory().getId());
+            category.setId(ProductDto.getCategoryId());
             Product.setCategory(category);
 
             return Product;

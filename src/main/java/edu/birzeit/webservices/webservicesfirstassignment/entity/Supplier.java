@@ -34,7 +34,6 @@ public class Supplier {
     private String address;
     @Column
     @ColumnDefault("true")
-
     private Boolean isActive;
 
 }
