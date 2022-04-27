@@ -6,3 +6,5 @@
 ![img.png](extra/Docs/ProductDoc.png)
 ### API Design for Supplier Resource
 ![img.png](extra/Docs/SupplierDoc.png)
+
+### Note: Postman JSON Files are at extra/Postman
